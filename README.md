@@ -1,19 +1,22 @@
 # Camptocamp Outdoor Agent Plugin
 
-Plugin portable read-only pour assistants et agents capables de charger le format Agent Plugins. Il regroupe le MCP public Camptocamp et un skill de préparation outdoor ; il ne recrée pas la logique du MCP.
+Plugin portable read-only pour assistants et agents capables de charger le format Agent Plugins. Il fournit le skill de préparation outdoor et documente le raccordement à un MCP Camptocamp installé par chaque utilisateur.
 
 ## Contenu
 
 - `plugin.json` : manifeste portable Agent Plugins ;
-- `mcp.json` : connexion Streamable HTTP vers `https://camptocamp.julien-ducerf.com/mcp` ;
 - `skills/camptocamp/SKILL.md` : méthode de recherche et de préparation outdoor ;
 - `assets/ctc.png` : logo Camptocamp.
 
 ## Desktop et Web : retour d’expérience
 
+### Installer le MCP
+
+Le plugin ne pointe vers aucun serveur personnel et n’embarque pas de copie du MCP. Installe le MCP depuis [jducerf/mcp-camptocamp](https://github.com/jducerf/mcp-camptocamp), puis configure ton client avec le transport adapté (stdio en local, ou Streamable HTTP si tu héberges ton propre endpoint).
+
 ### Desktop / Codex
 
-Le paquet complet peut être installé depuis un dossier local ou un marketplace Git. Le format OpenAI ajoute `.codex-plugin/plugin.json`, `.app.json` et éventuellement `.mcp.json`. Cette variante communautaire reste volontairement générique et ne contient aucun identifiant de connexion privé.
+Le paquet peut être installé depuis un dossier local ou un marketplace Git. Cette variante communautaire reste volontairement générique et ne contient aucun endpoint ni identifiant de connexion privé. Le MCP est configuré séparément par l’utilisateur.
 
 ### ChatGPT Web
 
@@ -23,7 +26,7 @@ L’URL du VPS héberge les fichiers, mais n’est pas une URL d’installation 
 
 ## Sécurité et limites
 
-Le MCP est public et read-only. Le plugin ne crée, ne modifie et ne supprime aucun contenu Camptocamp. Les conditions, la météo, la nivologie, les accès et la sécurité doivent être vérifiés avec des sources actuelles et sur le terrain.
+Le MCP recommandé est public et read-only. Le plugin ne crée, ne modifie et ne supprime aucun contenu Camptocamp. Les conditions, la météo, la nivologie, les accès et la sécurité doivent être vérifiés avec des sources actuelles et sur le terrain.
 
 ## Licence
 
