@@ -14,7 +14,7 @@ Ce dépôt fournit un plugin portable en lecture seule pour assistants et agents
 
 Installez ce dépôt comme Agent Plugin depuis son dépôt Git ou son dossier local. Le client compatible lit `plugin.json`, découvre `mcp.json`, démarre le serveur local embarqué et charge le skill.
 
-Vous n’avez pas besoin de notre VPS ni d’une configuration MCP séparée pour les clients capables d’exécuter un serveur stdio local. Node.js 18 ou une version ultérieure doit être disponible sur la machine du client.
+Vous n’avez pas besoin d'un VPS ni d’une configuration MCP séparée pour les clients capables d’exécuter un serveur stdio local. Node.js 18 ou une version ultérieure doit être disponible sur la machine du client.
 
 Le MCP source reste public et indépendant dans [jducerf/mcp-camptocamp](https://github.com/jducerf/mcp-camptocamp). Le répertoire `mcp/` est une copie construite et versionnée dans ce plugin afin de respecter le contrat Agent Plugins et de permettre le lancement par `mcp.json`.
 
