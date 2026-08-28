@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "camptocamp",
-  "version": "0.1.2",
-  "description": "Portable read-only Camptocamp outdoor skill; configure your own Camptocamp MCP server.",
+  "version": "0.1.3",
+  "description": "Portable read-only Camptocamp outdoor skill. Install and connect your own Camptocamp MCP server first.",
   "author": {
     "name": "AI Platform 2"
   },
