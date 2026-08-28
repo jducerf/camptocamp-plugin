@@ -6,6 +6,7 @@
   "author": {
     "name": "AI Platform 2"
   },
+  "repository": "https://github.com/jducerf/camptocamp-plugin",
   "license": "MIT",
   "keywords": [
     "camptocamp",
