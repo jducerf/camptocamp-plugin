@@ -1,0 +1,82 @@
+import { z } from "zod";
+import { searchWaypoints, getWaypoint } from "../api/camptocamp.js";
+export const searchWaypointsSchema = z.object({
+    query: z.string().describe("Search query for waypoints (e.g. 'Mont Blanc', 'refuge Goûter')"),
+    limit: z.number().int().min(1).max(50).optional().default(10).describe("Maximum number of results"),
+});
+export const getWaypointSchema = z.object({
+    id: z.number().int().positive().describe("Waypoint ID from Camptocamp"),
+});
+function formatWaypointSearchResult(response) {
+    if (response.documents.length === 0) {
+        return "No waypoints found.";
+    }
+    const lines = [`Found ${response.total} waypoint(s). Showing ${response.documents.length}:\n`];
+    for (const wp of response.documents) {
+        const locale = wp.locales.find((l) => l.lang === "fr") ?? wp.locales[0];
+        const title = locale?.title ?? "Untitled";
+        const elevation = wp.elevation ? ` | ${wp.elevation}m` : "";
+        lines.push(`- [${wp.document_id}] ${title} (${wp.waypoint_type})${elevation}`);
+    }
+    return lines.join("\n");
+}
+// geometry.geom is a GeoJSON Point serialized as a string, in Web Mercator (EPSG:3857)
+function parseCoordinates(geom) {
+    if (!geom)
+        return undefined;
+    try {
+        const parsed = JSON.parse(geom);
+        if (!Array.isArray(parsed.coordinates))
+            return undefined;
+        const [x, y] = parsed.coordinates;
+        const R = 6378137;
+        const lng = (x / R) * (180 / Math.PI);
+        const lat = (2 * Math.atan(Math.exp(y / R)) - Math.PI / 2) * (180 / Math.PI);
+        return { lat, lng };
+    }
+    catch {
+        return undefined;
+    }
+}
+function formatWaypointDetail(waypoint) {
+    const locale = waypoint.locales.find((l) => l.lang === "fr") ?? waypoint.locales[0];
+    const lines = [];
+    lines.push(`# ${locale?.title ?? "Untitled"} (ID: ${waypoint.document_id})`);
+    lines.push(`\n**Type**: ${waypoint.waypoint_type}`);
+    if (waypoint.elevation)
+        lines.push(`**Elevation**: ${waypoint.elevation}m`);
+    const coords = parseCoordinates(waypoint.geometry?.geom);
+    if (coords) {
+        lines.push(`**Coordinates**: ${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)}`);
+    }
+    if (locale?.description) {
+        lines.push(`\n## Description\n${locale.description}`);
+    }
+    if (locale?.access) {
+        lines.push(`\n## Access\n${locale.access}`);
+    }
+    return lines.join("\n");
+}
+export async function handleSearchWaypoints(input) {
+    const response = await searchWaypoints(input.query, input.limit);
+    return formatWaypointSearchResult(response);
+}
+export async function handleGetWaypoint(input) {
+    const waypoint = await getWaypoint(input.id);
+    return formatWaypointDetail(waypoint);
+}
+export const waypointToolDefinitions = [
+    {
+        name: "search_waypoints",
+        description: "Search for waypoints (summits, shelters, huts, bivouacs) on Camptocamp.org. Returns a list of matching waypoints with basic info (ID, title, type, elevation).",
+        inputSchema: searchWaypointsSchema,
+        handler: handleSearchWaypoints,
+    },
+    {
+        name: "get_waypoint",
+        description: "Get full details of a specific waypoint from Camptocamp.org by its ID, including altitude, GPS coordinates, and description.",
+        inputSchema: getWaypointSchema,
+        handler: handleGetWaypoint,
+    },
+];
+//# sourceMappingURL=waypoints.js.map

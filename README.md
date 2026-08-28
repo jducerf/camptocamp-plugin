@@ -1,20 +1,26 @@
 # Camptocamp Outdoor Agent Plugin
 
-Ce dépôt fournit un plugin portable en lecture seule pour assistants et agents compatibles avec le format Agent Plugins. Il apporte une méthode de recherche et de préparation outdoor autour de Camptocamp.
-
-**Prérequis : installez d’abord votre propre MCP Camptocamp.** Le plugin ne contient pas le serveur MCP et ne se connecte à aucun serveur personnel préconfiguré. C’est volontaire : chaque utilisateur conserve son installation, son hébergement et ses données de connexion.
+Ce dépôt fournit un plugin portable en lecture seule pour assistants et agents compatibles avec le format Agent Plugins. Il apporte une méthode de recherche et de préparation outdoor autour de Camptocamp et embarque une copie construite du MCP nécessaire à son fonctionnement local.
 
 ## Contenu
 
 - `plugin.json` : manifeste portable Agent Plugins ;
+- `mcp.json` : déclaration du serveur MCP embarqué, lancé depuis `${PLUGIN_ROOT}` ;
 - `skills/camptocamp/SKILL.md` : méthode de recherche et de préparation outdoor ;
+- `mcp/` : build du MCP Camptocamp embarqué, avec attribution dans `mcp/NOTICE.md` ;
 - `assets/ctc.png` : logo Camptocamp.
 
-Le fichier `mcp.json` n’est pas inclus dans ce dépôt. Dans un Agent Plugin, ce fichier sert à déclarer un serveur MCP réellement lançable par le client. Or le MCP Camptocamp est installé et construit par chaque utilisateur : son chemin local ou son endpoint distant lui appartient. Ajouter ici une configuration pointant vers notre VPS serait trompeur et empêcherait une installation communautaire correcte.
+## 1. Installer le plugin
 
-## 1. Installer votre MCP Camptocamp
+Installez ce dépôt comme Agent Plugin depuis son dépôt Git ou son dossier local. Le client compatible lit `plugin.json`, découvre `mcp.json`, démarre le serveur local embarqué et charge le skill.
 
-Clonez et construisez le MCP depuis son dépôt officiel communautaire :
+Vous n’avez pas besoin de notre VPS ni d’une configuration MCP séparée pour les clients capables d’exécuter un serveur stdio local. Node.js 18 ou une version ultérieure doit être disponible sur la machine du client.
+
+Le MCP source reste public et indépendant dans [jducerf/mcp-camptocamp](https://github.com/jducerf/mcp-camptocamp). Le répertoire `mcp/` est une copie construite et versionnée dans ce plugin afin de respecter le contrat Agent Plugins et de permettre le lancement par `mcp.json`.
+
+## 2. Utiliser le MCP séparément (facultatif)
+
+Si votre client ne prend pas en charge les Agent Plugins mais accepte les MCP stdio, vous pouvez installer le dépôt MCP directement :
 
 ```bash
 git clone https://github.com/jducerf/mcp-camptocamp.git
@@ -36,19 +42,15 @@ Pour un client local (stdio), configurez le MCP avec l’exécutable `node` et l
 
 Pour ChatGPT Web ou tout client distant, hébergez votre propre endpoint MCP en Streamable HTTP, puis connectez **votre URL** dans le client. Le dépôt MCP décrit les modalités de déploiement ; aucune URL du mainteneur n’est imposée par ce plugin.
 
-## 2. Installer ce plugin
-
-Une fois le MCP disponible dans votre client, installez ce dépôt comme Agent Plugin depuis son dépôt Git ou son dossier local. Le skill `skills/camptocamp/SKILL.md` sera alors chargé avec le plugin.
-
 ## Desktop et Web : retour d’expérience
 
 ### Desktop / Codex
 
-Installez le dépôt comme plugin depuis un dossier local ou une marketplace Git. Ajoutez ensuite votre MCP local en stdio dans le client. Le plugin et le serveur MCP restent deux composants séparés et remplaçables.
+Le plugin peut lancer son MCP embarqué en stdio via `mcp.json`, si le client prend en charge le format Agent Plugins et dispose de Node.js 18+.
 
 ### ChatGPT Web
 
-Connectez d’abord votre propre endpoint MCP Camptocamp dans ChatGPT, puis installez le plugin/skill selon les capacités de votre espace de travail. Le skill est conçu pour s’activer lorsque le MCP Camptocamp est présent dans la conversation. Sur le Web, les skills sont utilisés en mode **Work** ; ils ne sont pas appelés en mode **Chat**.
+ChatGPT Web ne lance pas directement ce serveur stdio local. Pour l’utiliser sur le Web, déployez votre propre copie du MCP derrière un endpoint Streamable HTTP HTTPS, puis connectez cette URL dans ChatGPT. Le skill peut être installé séparément selon les capacités de votre espace de travail. Dans notre test, les skills Web sont utilisés en mode **Work** et ne sont pas appelés en mode **Chat**.
 
 L’URL du VPS héberge les fichiers, mais n’est pas une URL d’installation universelle. Une publication Workspace ou dans le répertoire public dépend des permissions, du type de compte et du processus OpenAI correspondant.
 
