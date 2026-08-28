@@ -1,0 +1,17 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "camptocamp",
+  "version": "0.1.2",
+  "description": "Portable read-only Camptocamp integration for mountain route, waypoint, and outing discovery.",
+  "author": {
+    "name": "AI Platform 2"
+  },
+  "license": "MIT",
+  "keywords": [
+    "camptocamp",
+    "mountain",
+    "routes",
+    "mcp",
+    "read-only"
+  ]
+}
